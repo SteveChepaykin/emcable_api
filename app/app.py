@@ -22,14 +22,22 @@ def getTableOfId(tagid: int):
       dr.archive_itemid = {tagid} and layer = 1
     order by dr.source_time desc
     ''')
-    results = cursor.fetchall()
-    psql.commit()
+    results = list(map(__custor2map, cursor.fetchall()))
     cursor.close()
+
     res = jsonify(results)
     print(res)
     return res
 
+def __custor2map(ll: list) -> dict:
+    r = {}
+    r['layer'] = ll[0]
+    r['archive_itemid'] = ll[1]
+    r['source_time'] = ll[2]
+    r['value'] = ll[3]
+    return r
+
 if __name__ == '__main__':
-    HOST = os.environ.get('SERVER_HOST', 'localhost')
-    PORT = os.environ.get('SERVER_PORT', '5432')
+    HOST = os.environ.get('SERVER_HOST', '0.0.0.0')
+    PORT = os.environ.get('SERVER_PORT', '8880')
     app.run(host=HOST, port=PORT, debug=True)

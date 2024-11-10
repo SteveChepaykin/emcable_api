@@ -1,23 +1,23 @@
 services:
-  server:
+  nginx:
+    image: nginx
     container_name: emcable_nginx
-    build: ./server
     restart: always
     networks:
       - emcablenet
     ports:
-      - "5431:80"
+      - "8880:80"
+    volumes:
+      - ./nginx/emcable.conf:/etc/nginx/conf.d/default.conf:ro
 
   app:
-    container_name: emcable_api_app
+    container_name: emcable_app
     build: ./app
     restart: always
-    ports: 
-      - "5432:5432"
     networks:
       - emcablenet
     depends_on:
-      - server
+      - nginx
 
 networks:
   emcablenet:
