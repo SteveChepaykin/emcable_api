@@ -1,16 +1,16 @@
 from flask import Flask, jsonify
 import psycopg2
 import config
+import os
 
 app = Flask(__name__)
 
-# Конфигурация MySQL
-app.config['PSQL_HOST'] = config.host
-app.config['PSQL_USER'] = config.user
-app.config['PSQL_PASSWORD'] = config.password
-app.config['PSQL_DB'] = config.database
+# app.config['PSQL_HOST'] = config.host
+# app.config['PSQL_USER'] = config.user
+# app.config['PSQL_PASSWORD'] = config.password
+# app.config['PSQL_DB'] = config.database
 
-psql = psycopg2.connect(host=app.config["PSQL_HOST"], port = 15432, database=app.config["PSQL_DB"], user=app.config["PSQL_USER"], password=app.config["PSQL_PASSWORD"])
+psql = psycopg2.connect(host=config.host, port = 15432, database=config.database, user=config.user, password=config.password)
 
 @app.route('/api/data/<tagid>', methods=['GET'])
 def getTableOfId(tagid: int):
@@ -30,4 +30,6 @@ def getTableOfId(tagid: int):
     return res
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5432)
+    HOST = os.environ.get('SERVER_HOST', 'localhost')
+    PORT = os.environ.get('SERVER_PORT', '5432')
+    app.run(host=HOST, port=PORT, debug=True)

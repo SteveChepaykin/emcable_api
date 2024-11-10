@@ -3,9 +3,10 @@ services:
     container_name: emcable_nginx
     build: ./server
     restart: always
+    networks:
+      - emcablenet
     ports:
       - "5431:80"
-
 
   app:
     container_name: emcable_api_app
@@ -13,40 +14,11 @@ services:
     restart: always
     ports: 
       - "5432:5432"
+    networks:
+      - emcablenet
     depends_on:
       - server
 
-
-
-# services:
-#   mysql:
-#     container_name: mysql
-#     image: mariadb
-#     restart: always
-#     environment:
-#       MYSQL_DATABASE: mydb
-#       MYSQL_USER: user
-#       MYSQL_PASSWORD: password
-#       MYSQL_ROOT_PASSWORD: rootpassword
-#     networks:
-#       - mynetwork
-#     ports:
-#       - "3306:3306"
-#     volumes:
-#       - ./mysql_data:/var/lib/mysql/
-#       - ./database:/docker-entrypoint-initdb.d/
-
-#   app:
-#     container_name: app
-#     build: ./app
-#     restart: always
-#     networks:
-#       - mynetwork
-#     ports:
-#       - "5000:5000"
-#     depends_on:
-#       - mysql
-
-# networks:
-#   mynetwork:
-#     driver: bridge
+networks:
+  emcablenet:
+    driver: bridge
