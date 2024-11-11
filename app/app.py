@@ -5,11 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# app.config['PSQL_HOST'] = config.host
-# app.config['PSQL_USER'] = config.user
-# app.config['PSQL_PASSWORD'] = config.password
-# app.config['PSQL_DB'] = config.database
-
 psql = psycopg2.connect(host=config.host, port = 15432, database=config.database, user=config.user, password=config.password)
 
 @app.route('/api/data/<tagid>', methods=['GET'])
