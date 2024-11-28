@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+import pandas as pd
 import psycopg2
 import config
 import os
@@ -17,12 +18,15 @@ def getTableOfId(tagid: int):
       dr.archive_itemid = {tagid} and layer = 1
     order by dr.source_time desc
     ''')
-    results = list(map(__custor2map, cursor.fetchall()))
+    
+    results = cursor.fetchall()
     cursor.close()
-
     res = jsonify(results)
-    print(res)
-    return res
+    # pd.DataFrame(results).to_csv(f'linedata{tagid}.csv', index=False)
+    writetocsv(res, f'linedata{tagid}.csv')
+
+    with open(f'linedata{tagid}.csv', 'r') as file:
+        return res
 
 def __custor2map(ll: list) -> dict:
     r = {}
@@ -31,6 +35,10 @@ def __custor2map(ll: list) -> dict:
     r['source_time'] = ll[2]
     r['value'] = ll[3]
     return r
+
+def writetocsv(results, name):
+    df = pd.DataFrame(results)
+    df.to_csv(name, index=False)
 
 if __name__ == '__main__':
     HOST = os.environ.get('SERVER_HOST', '0.0.0.0')
